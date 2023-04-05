@@ -1,3 +1,18 @@
 "use strict"
 
-alert("im here")
+const DOM = {
+
+}
+
+init()
+
+
+
+
+
+
+
+function init() {
+
+
+}
