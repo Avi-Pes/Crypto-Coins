@@ -1,7 +1,8 @@
 "use strict"
 
 const DOM = {
-
+    controllersBox: document.querySelector('#controllers'),
+    contentBox: document.querySelector('#content'),
 }
 
 init()
@@ -13,6 +14,6 @@ init()
 
 
 function init() {
+    renderCards()
 
-    const coins = getAllCoins().then(res => console.log(res))
 }

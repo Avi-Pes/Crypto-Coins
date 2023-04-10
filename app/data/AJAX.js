@@ -6,12 +6,16 @@ async function getAllCoins() {
     try {
         const res = await fetch(url)
         const json = await res.json()
-        // console.log('=====>', 'json:', json);
+
+        // ! for development only:
+        const shorter = []
+        json.forEach((coin, i) => { if (i >= 400 && i < 500) shorter.push(coin) })
+        return shorter
+        // !!!!!!!!!!
+
         return json
     } catch (error) {
-        console.error(error);
+        console.error(error)
     }
-
-
 
 }
