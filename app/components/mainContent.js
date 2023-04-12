@@ -74,12 +74,15 @@ function getCoinCard(coin) {
     cardText.classList.add("card-text")
     cardText.innerText = `Symbol: ${coin.symbol}`
     const btn = document.createElement('button')
-    btn.dataset.coinId = coin.id
+    // btn.dataset.coinId = coin.id //improved:
+    card.dataset.coinId = coin.id
     btn.classList.add("btn", "btn-primary")
     btn.innerText = btnText
-    btn.addEventListener('click', function (e) {
-        alert(e.target.dataset.coinId)
+
+    btn.addEventListener('click', () => {
+        alert("id: " + card.dataset.coinId)
     })
+    card.addEventListener('click', cardClickHandler)
 
     cardBody.append(cardTitle, cardText, btn)
     card.append(cardBody)
@@ -87,3 +90,74 @@ function getCoinCard(coin) {
     return card
 }
 
+function cardClickHandler() {
+    const id = this.dataset.coinId
+
+    if (!FILTER_STATE.watched.has(id)) {
+        if (FILTER_STATE.watched.size < 5) {
+            FILTER_STATE.watched.add(id)
+            this.classList.add("watched-coin")
+        } else alert("only 5 coins can be watched")
+    } else {
+        FILTER_STATE.watched.delete(id)
+        this.classList.remove("watched-coin")
+    }
+    renderWatchedCoins()
+}
+
+
+function renderWatchedCoins() {
+    const box = DOM.controllersBox
+    const watched = FILTER_STATE.watched
+    const msgForEmptyList = "Click on a card to add a coin to graph"
+    const labelText = "Watched Coins: "
+
+    if (FILTER_STATE.watched.size === 0) {
+        const h5 = document.createElement('h5')
+        h5.innerText = msgForEmptyList
+        box.innerHTML = ""
+        box.append(h5)
+        return
+    }
+
+
+
+    const wrapper = document.createElement('div')
+    const wrapperClasses = [
+        "d-flex",
+        "gap-2",
+        "justify-content-center",
+        "align-items-center",
+        "p-2",
+        "border",
+        "border-1",
+        "rounded-1",
+        "bg-white-subtle"
+    ]
+    wrapper.classList.add(...wrapperClasses)
+
+    const label = document.createElement('div')
+    label.classList.add("h5")
+    label.innerText = labelText
+
+    const badges = []
+    watched.forEach((id) => {
+        const badge = document.createElement('span')
+        badge.classList.add("badge", "bg-secondary", "p-1", "rounded-3")
+        badge.innerText = id
+        badge.style.cursor = "no-drop"
+        badge.addEventListener('click', () => {
+            watched.delete(id)
+            document.querySelector(`.coin-card[data-coin-id=${id}]`).classList.remove("watched-coin")
+            renderWatchedCoins()
+        })
+        badges.push(badge)
+    })
+    console.log('=====>', 'badges:', badges);
+
+    wrapper.append(label, ...badges)
+
+    box.innerHTML = ""
+    box.append(wrapper)
+
+}
