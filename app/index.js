@@ -5,7 +5,12 @@ const DOM = {
     contentBox: document.querySelector('#content'),
 }
 const FILTER_STATE = {
-    watched: new Set()
+    allCoins: [],
+    watched: new Set(),
+    filteredParams: {
+        keyword: null,
+        amount: null
+    },
 }
 
 init()
@@ -17,7 +22,7 @@ init()
 
 
 function init() {
-    renderWatchedCoins()
-    renderCards()
+    renderControllers()
+    renderCoinsFromApi()
 
 }

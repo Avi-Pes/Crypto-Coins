@@ -1,34 +1,31 @@
 "use strict"
 
-async function renderCards() {
+async function renderCoinsFromApi() {
+
     const destination = DOM.contentBox
     toggleLoader(destination)
 
     try {
         const arrOfCoins = await getAllCoins()
-        const cards = getCardsBox(arrOfCoins)
-        destination.innerHTML = ""
-        destination.append(cards)
+        renderCardsFromArr(arrOfCoins)
         toggleLoader(destination, true)
 
     } catch (error) {
         const msg = `OOPS there is an Error!
         ${error}`
         alert(msg)
-        renderEmpty()
+        renderEmptyContent()
         toggleLoader(destination, true)
     }
+}
 
-
-    function renderEmpty(text = "No Coins To Show...") {
-        destination.innerHTML = ""
-        const h4 = document.createElement('h4')
-        h4.classList.add("lead", "text-center")
-        h4.innerText =
-            destination.append()
-
-    }
-
+function renderEmptyContent(text = "No Coins To Show...") {
+    const destination = DOM.contentBox
+    destination.innerHTML = ""
+    const h4 = document.createElement('h4')
+    h4.classList.add("lead", "text-center")
+    h4.innerText = text
+    destination.append()
 }
 
 function getCardsBox(arrOfCoins) {
@@ -64,6 +61,7 @@ function getCoinCard(coin) {
     // {id: '01coin', symbol: 'zoc', name: '01coin'}
     const card = document.createElement('div')
     card.classList.add("coin-card", "card")
+    card.dataset.coinId = coin.id
 
     const cardBody = document.createElement('div')
     cardBody.classList.add("card-body")
@@ -73,18 +71,23 @@ function getCoinCard(coin) {
     const cardText = document.createElement('p')
     cardText.classList.add("card-text")
     cardText.innerText = `Symbol: ${coin.symbol}`
-    const btn = document.createElement('button')
-    // btn.dataset.coinId = coin.id //improved:
-    card.dataset.coinId = coin.id
-    btn.classList.add("btn", "btn-primary")
-    btn.innerText = btnText
+    const btnBox = document.createElement('div')
+    btnBox.classList.add("d-flex", "gap-3")
+    const infoBtn = document.createElement('button')
+    infoBtn.classList.add("btn", "btn-primary")
+    infoBtn.innerText = btnText
+    btnBox.append(infoBtn)
 
-    btn.addEventListener('click', () => {
-        alert("id: " + card.dataset.coinId)
+    infoBtn.addEventListener('click', (e) => {
+        renderCoinDataFromApi(card.dataset.coinId, btnBox)
+        e.stopPropagation()
     })
     card.addEventListener('click', cardClickHandler)
+    if (FILTER_STATE.watched.has(card.dataset.coinId)) card.classList.add("watched-coin")
 
-    cardBody.append(cardTitle, cardText, btn)
+
+
+    cardBody.append(cardTitle, cardText, btnBox)
     card.append(cardBody)
 
     return card
@@ -102,11 +105,22 @@ function cardClickHandler() {
         FILTER_STATE.watched.delete(id)
         this.classList.remove("watched-coin")
     }
-    renderWatchedCoins()
+    renderControllers()
+}
+function renderCardsFromArr(arr) {
+    if (!Array.isArray(arr) || !arr) {
+        renderEmptyContent()
+        console.error("array of coins expected")
+        return
+    }
+
+    const destination = DOM.contentBox
+    const cardsBox = getCardsBox(arr)
+    destination.innerHTML = ""
+    destination.append(cardsBox)
 }
 
-
-function renderWatchedCoins() {
+function renderWatchedList() {
     const box = DOM.controllersBox
     const watched = FILTER_STATE.watched
     const msgForEmptyList = "Click on a card to add a coin to graph"
@@ -115,12 +129,9 @@ function renderWatchedCoins() {
     if (FILTER_STATE.watched.size === 0) {
         const h5 = document.createElement('h5')
         h5.innerText = msgForEmptyList
-        box.innerHTML = ""
         box.append(h5)
         return
     }
-
-
 
     const wrapper = document.createElement('div')
     const wrapperClasses = [
@@ -136,28 +147,120 @@ function renderWatchedCoins() {
     ]
     wrapper.classList.add(...wrapperClasses)
 
-    const label = document.createElement('div')
-    label.classList.add("h5")
+    const label = document.createElement('span')
+    label.classList.add("h5", "d-flex", "align-items-center")
     label.innerText = labelText
 
     const badges = []
     watched.forEach((id) => {
         const badge = document.createElement('span')
-        badge.classList.add("badge", "bg-secondary", "p-1", "rounded-3")
+        badge.classList.add("badge", "bg-secondary", "p-2", "rounded-3")
         badge.innerText = id
         badge.style.cursor = "no-drop"
         badge.addEventListener('click', () => {
             watched.delete(id)
             document.querySelector(`.coin-card[data-coin-id=${id}]`).classList.remove("watched-coin")
-            renderWatchedCoins()
+            // renderWatchedList()
+            renderControllers()
         })
         badges.push(badge)
     })
-    console.log('=====>', 'badges:', badges);
 
     wrapper.append(label, ...badges)
-
-    box.innerHTML = ""
     box.append(wrapper)
+}
 
+function renderSearchBox() {
+    const box = DOM.controllersBox
+    const allCoins = FILTER_STATE.allCoins || []
+    const labelText = "Search: "
+    const placeholder = "e.g. Bitcoin / BTC "
+
+    const wrapper = document.createElement('div')
+    const wrapperClasses = [
+        "d-flex",
+        "gap-2",
+        "justify-content-center",
+        "align-items-center",
+        "p-2",
+        "border",
+        "border-1",
+        "rounded-1",
+        "bg-white-subtle"
+    ]
+    wrapper.classList.add(...wrapperClasses)
+
+    const label = document.createElement('span')
+    label.classList.add("h5", "d-flex", "align-items-center")
+    label.innerText = labelText
+
+    const input = document.createElement('input')
+    input.classList.add("w-50", "form-control")
+    input.placeholder = placeholder
+    if (FILTER_STATE.filteredParams.keyword) input.value = FILTER_STATE.filteredParams.keyword
+
+    const searchBtn = document.createElement('btn')
+    searchBtn.classList.add("btn", "btn-lg", "btn-primary", "shadow-sm")
+    searchBtn.innerText = "Search"
+    searchBtn.addEventListener('click', () => {
+        const keyword = input.value
+        if (keyword) executeSearch(keyword)
+    })
+
+    const showAllBtn = document.createElement('btn')
+    showAllBtn.classList.add("btn", "btn-lg", "btn-outline-info", "shadow-sm")
+    showAllBtn.innerText = "Show All"
+    showAllBtn.addEventListener('click', () => {
+        input.value = ""
+        FILTER_STATE.filteredParams.amount = null
+        FILTER_STATE.filteredParams.keyword = null
+        renderCardsFromArr(allCoins)
+    })
+
+    const amount = document.createElement('div')
+    amount.classList.add("text-center", "h6")
+    amount.id = "searchAmount"
+    const length = FILTER_STATE.filteredParams.amount
+    if (length) amount.innerText = `Showing ${length} results`
+
+
+    wrapper.append(label, input, searchBtn, showAllBtn)
+    box.append(wrapper, amount)
+}
+
+function renderControllers() {
+    DOM.controllersBox.innerHTML = ""
+    renderSearchBox()
+    renderWatchedList()
+}
+
+function executeSearch(keyword) {
+    if (!keyword || typeof keyword !== 'string') return
+
+    const filtered = FILTER_STATE.allCoins.filter(coin => {
+        const objValues = Object.values(coin)
+        return objValues.some(v => v.toLowerCase().includes(keyword.toLowerCase()))
+    })
+    FILTER_STATE.filteredParams.keyword = keyword
+    FILTER_STATE.filteredParams.amount = filtered.length
+
+    renderCardsFromArr(filtered)
+    renderControllers()
+
+}
+
+async function renderCoinDataFromApi(id, loaderDestination) {
+    toggleLoader(loaderDestination)
+
+    try {
+        const data = await getCoin(id)
+        console.log('=====>', 'data:', data);
+        toggleLoader(loaderDestination, true)
+
+    } catch (error) {
+        const msg = `OOPS there is an Error!
+        ${error}`
+        alert(msg)
+        toggleLoader(loaderDestination, true)
+    }
 }
