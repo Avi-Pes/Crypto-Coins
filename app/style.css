@@ -1,0 +1,27 @@
+body {
+    background: hsl(230, 30%, 75%);
+}
+
+.coin-card {
+    transition: all 300ms;
+}
+
+.coin-card:hover {
+    translate: 0px -3px;
+    box-shadow: 1px 5px 16px -5px rgba(0, 0, 0, 0.5);
+}
+
+.watched-coin {
+    position: relative;
+    background: rgba(254, 254, 1, 0.755);
+}
+
+.watched-coin::before {
+    position: absolute;
+    content: "watched";
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem;
+    background-color: grey;
+    border-radius: 30px;
+}
