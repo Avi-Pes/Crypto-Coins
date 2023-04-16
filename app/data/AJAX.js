@@ -16,6 +16,7 @@ async function getAllCoins() {
 
         return json
     } catch (error) {
+        // TODO add swal
         console.error(error)
     }
 
@@ -30,6 +31,7 @@ async function getCoin(id) {
 
         return json
     } catch (error) {
+        // TODO add swal
         console.error(error)
     }
 }
