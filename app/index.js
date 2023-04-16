@@ -5,12 +5,13 @@ const DOM = {
     contentBox: document.querySelector('#content'),
 }
 const FILTER_STATE = {
-    allCoins: [],
+    allCoins: null,
     watched: new Set(),
     filteredParams: {
         keyword: null,
         amount: null
     },
+    additionalInfos: [],
 }
 
 init()

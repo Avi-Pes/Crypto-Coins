@@ -20,12 +20,13 @@ async function renderCoinsFromApi() {
 }
 
 function renderEmptyContent(text = "No Coins To Show...") {
+    console.log("in")
     const destination = DOM.contentBox
     destination.innerHTML = ""
     const h4 = document.createElement('h4')
-    h4.classList.add("lead", "text-center")
+    h4.classList.add("lead", "text-center", "p-5")
     h4.innerText = text
-    destination.append()
+    destination.append(h4)
 }
 
 function getCardsBox(arrOfCoins) {
@@ -68,6 +69,9 @@ function getCoinCard(coin) {
     const cardTitle = document.createElement('h5')
     cardTitle.classList.add("card-title")
     cardTitle.innerText = coin.name || coin.id
+    cardTitle.style.whiteSpace = "nowrap"
+    cardTitle.style.textOverflow = "ellipsis"
+    cardTitle.style.overflow = "hidden"
     const cardText = document.createElement('p')
     cardText.classList.add("card-text")
     cardText.innerText = `Symbol: ${coin.symbol}`
@@ -78,8 +82,14 @@ function getCoinCard(coin) {
     infoBtn.innerText = btnText
     btnBox.append(infoBtn)
 
+    const infoBox = document.createElement('div')
+    infoBox.classList.add("p-2", "mt-2", "border", "border-1", "border-dark", "bg-warning", "d-none")
+    infoBox.id = "infoBox"
+    infoBox.dataset.isOpened = "false"
+
     infoBtn.addEventListener('click', (e) => {
-        renderCoinDataFromApi(card.dataset.coinId, btnBox)
+        moreInfoHandler(card, btnBox, infoBox)
+
         e.stopPropagation()
     })
     card.addEventListener('click', cardClickHandler)
@@ -87,7 +97,7 @@ function getCoinCard(coin) {
 
 
 
-    cardBody.append(cardTitle, cardText, btnBox)
+    cardBody.append(cardTitle, cardText, btnBox, infoBox)
     card.append(cardBody)
 
     return card
@@ -108,7 +118,7 @@ function cardClickHandler() {
     renderControllers()
 }
 function renderCardsFromArr(arr) {
-    if (!Array.isArray(arr) || !arr) {
+    if (!Array.isArray(arr) || arr.length === 0 || !arr) {
         renderEmptyContent()
         console.error("array of coins expected")
         return
@@ -214,7 +224,8 @@ function renderSearchBox() {
         input.value = ""
         FILTER_STATE.filteredParams.amount = null
         FILTER_STATE.filteredParams.keyword = null
-        renderCardsFromArr(allCoins)
+        allCoins.length ? renderCardsFromArr(allCoins) : renderCoinsFromApi()
+
     })
 
     const amount = document.createElement('div')
@@ -264,3 +275,36 @@ async function renderCoinDataFromApi(id, loaderDestination) {
         toggleLoader(loaderDestination, true)
     }
 }
+
+
+async function moreInfoHandler(card, loaderDest, infoDest) {
+    const id = card.dataset.coinId
+    const infoBox = card.querySelector('#infoBox')
+
+    // if presented => close dataBox
+    if (infoBox.dataset.isOpened === "true") {
+        infoBox.dataset.isOpened === "false"
+        infoBox.classList.add("d-none")
+        infoBox.classList.remove("d-block")
+    } else {
+        infoBox.dataset.isOpened === "true"
+        infoBox.classList.add("d-block")
+        infoBox.classList.remove("d-none")
+    }
+
+
+
+    // find coin in localStorage
+    // const coinData = coinLS ? coinLS : await getCoin(id)
+    await getCoin(id)
+    // renderData
+    // renderCoinDataFromApi(card.dataset.coinId, btnBox)
+
+
+}
+
+
+
+
+
+
