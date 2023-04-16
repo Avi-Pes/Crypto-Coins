@@ -61,7 +61,7 @@ function getCoinCard(coin) {
     const btnText = "More Info"
     // {id: '01coin', symbol: 'zoc', name: '01coin'}
     const card = document.createElement('div')
-    card.classList.add("coin-card", "card")
+    card.classList.add("coin-card", "card", "h-100")
     card.dataset.coinId = coin.id
 
     const cardBody = document.createElement('div')
@@ -260,47 +260,49 @@ function executeSearch(keyword) {
 
 }
 
-async function renderCoinDataFromApi(id, loaderDestination) {
-    toggleLoader(loaderDestination)
-
-    try {
-        const data = await getCoin(id)
-        console.log('=====>', 'data:', data);
-        toggleLoader(loaderDestination, true)
-
-    } catch (error) {
-        const msg = `OOPS there is an Error!
-        ${error}`
-        alert(msg)
-        toggleLoader(loaderDestination, true)
-    }
-}
-
-
 async function moreInfoHandler(card, loaderDest, infoDest) {
+    const allowedDataAge = 120000 //milliseconds
     const id = card.dataset.coinId
-    const infoBox = card.querySelector('#infoBox')
+    const infoBox = infoDest
+
 
     // if presented => close dataBox
     if (infoBox.dataset.isOpened === "true") {
-        infoBox.dataset.isOpened === "false"
-        infoBox.classList.add("d-none")
-        infoBox.classList.remove("d-block")
+        closeInfoBox()
     } else {
-        infoBox.dataset.isOpened === "true"
-        infoBox.classList.add("d-block")
-        infoBox.classList.remove("d-none")
+        toggleLoader(loaderDest)
+        const coin = await getUpdatedCoinData(allowedDataAge)
+        toggleLoader(loaderDest, true)
+        // renderData()
+        openInfoBox()
     }
 
 
-
-    // find coin in localStorage
-    // const coinData = coinLS ? coinLS : await getCoin(id)
-    await getCoin(id)
-    // renderData
-    // renderCoinDataFromApi(card.dataset.coinId, btnBox)
-
-
+    async function getUpdatedCoinData(allowedDataAge) {
+        const coinLS = JSON.parse(window.sessionStorage.getItem(id))
+        const dataAge = Date.now() - coinLS?.time// in milliseconds
+        if (coinLS && dataAge < allowedDataAge) {
+            console.log('=====>', 'coinLS:', coinLS)
+            infoBox.innerText = "from LS:" + coinLS.name
+            return coinLS
+        } else {
+            const coinData = await getCoin(id)
+            coinData.time = Date.now()
+            sessionStorage.setItem(id, JSON.stringify(coinData))
+            infoBox.innerText = "from API:" + coinData.name
+            return coinData
+        }
+    }
+    function closeInfoBox() {
+        infoBox.dataset.isOpened = "false"
+        infoBox.classList.add("d-none")
+        infoBox.classList.remove("d-block")
+    }
+    function openInfoBox() {
+        infoBox.dataset.isOpened = "true"
+        infoBox.classList.add("d-block")
+        infoBox.classList.remove("d-none")
+    }
 }
 
 
