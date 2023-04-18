@@ -83,7 +83,7 @@ function getCoinCard(coin) {
     btnBox.append(infoBtn)
 
     const infoBox = document.createElement('div')
-    infoBox.classList.add("p-2", "mt-2", "border", "border-1", "border-dark", "bg-warning", "d-none")
+    infoBox.classList.add("p-2", "mt-2", "border", "border-1", "border-dark", "d-none")
     infoBox.id = "infoBox"
     infoBox.dataset.isOpened = "false"
 
@@ -228,6 +228,7 @@ function renderSearchBox() {
 
     })
 
+
     const amount = document.createElement('div')
     amount.classList.add("text-center", "h6")
     amount.id = "searchAmount"
@@ -273,7 +274,7 @@ async function moreInfoHandler(card, loaderDest, infoDest) {
         toggleLoader(loaderDest)
         const coin = await getUpdatedCoinData(allowedDataAge)
         toggleLoader(loaderDest, true)
-        // renderData()
+        renderInfoBox(coin, infoBox)
         openInfoBox()
     }
 
@@ -282,14 +283,11 @@ async function moreInfoHandler(card, loaderDest, infoDest) {
         const coinLS = JSON.parse(window.sessionStorage.getItem(id))
         const dataAge = Date.now() - coinLS?.time// in milliseconds
         if (coinLS && dataAge < allowedDataAge) {
-            console.log('=====>', 'coinLS:', coinLS)
-            infoBox.innerText = "from LS:" + coinLS.name
             return coinLS
         } else {
             const coinData = await getCoin(id)
             coinData.time = Date.now()
             sessionStorage.setItem(id, JSON.stringify(coinData))
-            infoBox.innerText = "from API:" + coinData.name
             return coinData
         }
     }
@@ -305,6 +303,72 @@ async function moreInfoHandler(card, loaderDest, infoDest) {
     }
 }
 
+function renderInfoBox(dataObj, infoBox) {
+    console.log('=====>', 'dataObj:', dataObj);
+
+    const imageUrl = dataObj?.image?.large
+    const USD = dataObj.market_data?.current_price?.usd
+    const EUR = dataObj.market_data?.current_price?.eur
+    const ILS = dataObj.market_data?.current_price?.ils
+
+    const wrapper = document.createElement('div')
+    wrapper.classList.add('d-flex', "align-items-center", "justify-content-around")
+
+    const left = document.createElement('div')
+    const right = document.createElement('div')
+
+    const img = document.createElement('img')
+    // img.classList.add("img-fluid")
+    img.style.maxHeight = "150px"
+    img.src = imageUrl
+    img.alt = "Image Missing"
+    left.append(img)
+
+    const ul = getPriceUL(USD, EUR, ILS)
+    right.append(ul)
+
+    wrapper.append(left, right)
+
+    infoBox.innerHTML = ""
+    infoBox.append(wrapper)
+
+
+
+
+    function getPriceUL(usd, eur, ils) {
+        const symUsd = "$"
+        const symEur = "€"
+        const symIls = "₪"
+
+        const STRarr = []
+        const usdSTR = `US Dollars: ${symUsd}${usd}`
+        const eurSTR = `Euro: ${symEur}${eur}`
+        const ilsSTR = `Israeli Shekels: ${ils}${symIls}`
+        STRarr.push(usdSTR, eurSTR, ilsSTR)
+
+        const ul = document.createElement('ul')
+        ul.classList.add("list-group")
+
+
+        const LIs = STRarr.map(str => {
+            const li = document.createElement('li')
+            li.classList.add("list-group-item", "list-group-item-info")
+            li.innerText = str
+            return li
+        })
+
+        ul.append(...LIs)
+        return ul
+    }
+
+}
+
+// TODO
+function popModal() {
+
+    const modalEl = getBootstrapModal()
+
+}
 
 
 
