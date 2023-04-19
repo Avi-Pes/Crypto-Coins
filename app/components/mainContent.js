@@ -60,7 +60,7 @@ function getCoinCard(coin) {
 
     const btnText = "More Info"
     // {id: '01coin', symbol: 'zoc', name: '01coin'}
-    const card = document.createElement('div')
+    const card = document.createElement('article')
     card.classList.add("coin-card", "card", "h-100")
     card.dataset.coinId = coin.id
 
@@ -366,7 +366,61 @@ function renderInfoBox(dataObj, infoBox) {
 // TODO
 function popModal() {
 
-    const modalEl = getBootstrapModal()
+
+
+}
+
+function getModalElement(titleText) {
+
+    // <!-- modal experiment -->
+
+    // <section class="container p-3">
+    //     <div class="modal-overlay"></div>
+
+    //     <div class="my-modal card p-3">
+    //         <h5 class="ps-2">title</h5>
+    //         <div id="card-body" class="p-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur, facilis!</div>
+    //         <div id="modalButtonBox" class="d-flex justify-content-end gap-2">
+    //             <button class="btn btn-lg btn-success">save</button>
+    //             <button class="btn btn-lg btn-secondary">close</button>
+    //         </div>
+    //     </div>
+    // </section>
+
+    // <!-- modal experiment -->
+
+
+    // overlay
+    const overlay = document.createElement('section')
+    overlay.classList.add("modal-overlay", "visually-hidden")
+
+    // modal
+    const card = document.createElement('div')
+    card.classList.add("my-modal", "card", "p-3", "visually-hidden")
+
+    const title = document.createElement('h5')
+    title.classList.add("ps-2")
+    title.innerText = titleText
+
+    const cardBody = document.createElement('div')
+    cardBody.id = "modal-body"
+    cardBody.classList.add("p-2")
+    // TODO add the watchList mechanism
+
+    const btnBox = document.createElement('div')
+    btnBox.id = "modalButtonBox"
+    btnBox.classList.add("d-flex", "justify-content-end", "gap-2")
+    const saveBtn = document.createElement('button')
+    saveBtn.classList.add("btn", "btn-lg", "btn-success")
+    saveBtn.innerText = "Save"
+    const cancelBtn = document.createElement('button')
+    cancelBtn.classList.add("btn", "btn-lg", "btn-success")
+    cancelBtn.innerText = "Cancel"
+    saveBtn.addEventListener('click', saveHandler)
+    cancelBtn.addEventListener('click', cancelHandler)
+    btnBox.append(saveBtn, cancelBtn)
+
+    // TODO write handlers for buttons
 
 }
 
