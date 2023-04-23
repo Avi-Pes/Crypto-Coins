@@ -365,12 +365,12 @@ function renderInfoBox(dataObj, infoBox) {
 
 // TODO
 function popModal() {
-
-
+    const modal = getModalElement()
+    document.body.append(modal)
 
 }
 
-function getModalElement(titleText) {
+function getModalElement(titleText = "title", coinID) {
 
     // <!-- modal experiment -->
 
@@ -392,11 +392,11 @@ function getModalElement(titleText) {
 
     // overlay
     const overlay = document.createElement('section')
-    overlay.classList.add("modal-overlay", "visually-hidden")
+    overlay.classList.add("modal-overlay")
 
     // modal
-    const card = document.createElement('div')
-    card.classList.add("my-modal", "card", "p-3", "visually-hidden")
+    const modal = document.createElement('div')
+    modal.classList.add("my-modal", "card", "p-3")
 
     const title = document.createElement('h5')
     title.classList.add("ps-2")
@@ -406,6 +406,8 @@ function getModalElement(titleText) {
     cardBody.id = "modal-body"
     cardBody.classList.add("p-2")
     // TODO add the watchList mechanism
+    const watched = watchedCheckboxes()
+    cardBody.append(watched)
 
     const btnBox = document.createElement('div')
     btnBox.id = "modalButtonBox"
@@ -414,14 +416,73 @@ function getModalElement(titleText) {
     saveBtn.classList.add("btn", "btn-lg", "btn-success")
     saveBtn.innerText = "Save"
     const cancelBtn = document.createElement('button')
-    cancelBtn.classList.add("btn", "btn-lg", "btn-success")
+    cancelBtn.classList.add("btn", "btn-lg", "btn-secondary")
     cancelBtn.innerText = "Cancel"
     saveBtn.addEventListener('click', saveHandler)
     cancelBtn.addEventListener('click', cancelHandler)
     btnBox.append(saveBtn, cancelBtn)
 
+    modal.append(title, cardBody, btnBox)
+    overlay.append(modal)
+    return overlay
+
     // TODO write handlers for buttons
 
+    function cancelHandler() {
+        modal.classList.add("visually-hidden")
+        overlay.classList.add("visually-hidden")
+    }
+    function saveHandler() {
+        alert("write function first!")
+    }
+
+
+
+    function watchedCheckboxes() {
+        const watchedSet = FILTER_STATE.watched
+
+        const togglersBox = document.createElement('div')
+
+        const togglers = []
+        watchedSet.forEach(w => {
+            const toggler = getBStoggler(w)
+            togglers.push(toggler)
+        })
+
+        togglersBox.append(...togglers)
+
+        return togglersBox
+    }
+
+    function getBStoggler(coinID) {
+        const togglerId = `toggle_${coinID}`
+        const labelText = coinID
+        // 
+        // <div class="form-check form-switch">
+        //     <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+        //         <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
+        // </div>
+        // 
+
+        const div = document.createElement('div')
+        div.classList.add("form-check", "form-switch")
+
+        const toggle = document.createElement('input')
+        toggle.classList.add("form-check-input")
+        toggle.type = "checkbox"
+        toggle.role = "switch"
+        toggle.checked = true
+        toggle.id = togglerId
+        toggle.dataset.coinId = coinID
+
+        const label = document.createElement('label')
+        label.classList.add("form-check-label")
+        label.for = togglerId
+        label.innerText = labelText
+
+        div.append(toggle, label)
+        return div
+    }
 }
 
 

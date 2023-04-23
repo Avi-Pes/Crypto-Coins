@@ -40,6 +40,11 @@ body {
 }
 
 .my-modal {
+    transition: all 400ms;
+    position: absolute;
+    width: 60%;
+    top: 20%;
+    left: 20%;
+    right: 20%;
     z-index: 2;
-
 }
