@@ -37,6 +37,8 @@ body {
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(3px);
     z-index: 1;
+    opacity: 0;
+    animation: FadeIn 500ms ease-in 0s 1 normal forwards;
 }
 
 .my-modal {
@@ -47,4 +49,39 @@ body {
     left: 20%;
     right: 20%;
     z-index: 2;
+    opacity: 0;
+    animation: ModalEntrance 300ms cubic-bezier(0.37, 0, 0.63, 1) 200ms 1 normal forwards;
+}
+
+
+
+/* Animations */
+@keyframes FadeIn {
+    /* animation: FadeIn 500ms ease-in 0s 1 normal forwards; */
+
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes ModalEntrance {
+
+    /* animation: ModalEntrance 300ms cubic-bezier(0.37, 0, 0.63, 1) 200ms 1 normal forwards; */
+    0% {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
 }

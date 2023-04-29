@@ -110,7 +110,10 @@ function cardClickHandler() {
         if (FILTER_STATE.watched.size < 5) {
             FILTER_STATE.watched.add(id)
             this.classList.add("watched-coin")
-        } else alert("only 5 coins can be watched")
+        } else {
+            // alert("only 5 coins can be watched")
+            popModal("only 5 coins can be watched", id)
+        }
     } else {
         FILTER_STATE.watched.delete(id)
         this.classList.remove("watched-coin")
@@ -123,6 +126,8 @@ function renderCardsFromArr(arr) {
         console.error("array of coins expected")
         return
     }
+
+    FILTER_STATE.recentArrDrawn = arr
 
     const destination = DOM.contentBox
     const cardsBox = getCardsBox(arr)
@@ -363,9 +368,8 @@ function renderInfoBox(dataObj, infoBox) {
 
 }
 
-// TODO
-function popModal() {
-    const modal = getModalElement()
+function popModal(titleText, coinID) {
+    const modal = getModalElement(titleText, coinID)
     document.body.append(modal)
 
 }
@@ -431,21 +435,37 @@ function getModalElement(titleText = "title", coinID) {
     function cancelHandler() {
         modal.classList.add("visually-hidden")
         overlay.classList.add("visually-hidden")
+        deleteModal()
     }
     function saveHandler() {
-        alert("write function first!")
+        const togglersNodeList = cardBody.querySelectorAll('.modal-toggler')
+        const checked = []
+        togglersNodeList.forEach(t => {
+            if (t.checked) checked.push(t.dataset.coinId)
+        })
+        if (checked.length > 5) return
+
+        FILTER_STATE.watched.clear()
+        checked.forEach(id => {
+            FILTER_STATE.watched.add(id)
+        })
+
+        renderControllers()
+        renderCardsFromArr(FILTER_STATE.recentArrDrawn)
+        deleteModal()
     }
 
 
 
     function watchedCheckboxes() {
         const watchedSet = FILTER_STATE.watched
+        const arr = [...watchedSet, coinID]
 
         const togglersBox = document.createElement('div')
 
         const togglers = []
-        watchedSet.forEach(w => {
-            const toggler = getBStoggler(w)
+        arr.forEach((w, i) => {
+            const toggler = (i !== 5) ? getBStoggler(w, true) : getBStoggler(w)
             togglers.push(toggler)
         })
 
@@ -454,7 +474,7 @@ function getModalElement(titleText = "title", coinID) {
         return togglersBox
     }
 
-    function getBStoggler(coinID) {
+    function getBStoggler(coinID, isChecked = false) {
         const togglerId = `toggle_${coinID}`
         const labelText = coinID
         // 
@@ -468,10 +488,10 @@ function getModalElement(titleText = "title", coinID) {
         div.classList.add("form-check", "form-switch")
 
         const toggle = document.createElement('input')
-        toggle.classList.add("form-check-input")
+        toggle.classList.add("form-check-input", "modal-toggler")
         toggle.type = "checkbox"
         toggle.role = "switch"
-        toggle.checked = true
+        toggle.checked = isChecked ? true : false
         toggle.id = togglerId
         toggle.dataset.coinId = coinID
 
@@ -482,6 +502,11 @@ function getModalElement(titleText = "title", coinID) {
 
         div.append(toggle, label)
         return div
+    }
+
+    function deleteModal() {
+        const modalWrapper = document.querySelector('.modal-overlay')
+        modalWrapper.remove()
     }
 }
 

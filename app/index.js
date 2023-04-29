@@ -6,6 +6,7 @@ const DOM = {
 }
 const FILTER_STATE = {
     allCoins: null,
+    recentArrDrawn: null,
     watched: new Set(),
     filteredParams: {
         keyword: null,
