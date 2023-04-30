@@ -181,7 +181,22 @@ function renderWatchedList() {
         badges.push(badge)
     })
 
-    wrapper.append(label, ...badges)
+    const filterBtn = document.createElement('button')
+    filterBtn.classList.add("btn", "btn-primary")
+    filterBtn.innerText = "Filter"
+    filterBtn.addEventListener('click', () => {
+        if (watched.size === 0) return
+        const arr = []
+        const watchedArr = [...watched]
+        watchedArr.forEach(wId => {
+            const coin = FILTER_STATE.allCoins.find(c => c.id === wId)
+            arr.push(coin)
+        })
+        renderCardsFromArr(arr)
+
+    })
+
+    wrapper.append(label, filterBtn, ...badges)
     box.append(wrapper)
 }
 
