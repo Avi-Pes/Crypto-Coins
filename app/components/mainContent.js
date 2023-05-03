@@ -190,6 +190,7 @@ function renderWatchedList() {
     if (FILTER_STATE.watched.size === 0) {
         const h5 = document.createElement('h5')
         h5.innerText = msgForEmptyList
+        h5.classList.add("text-center")
         box.append(h5)
         return
     }
@@ -199,18 +200,18 @@ function renderWatchedList() {
         "d-flex",
         "flex-wrap",
         "gap-2",
-        "justify-content-center",
+        // "justify-content-center",
         "align-items-center",
         "p-2",
         "border",
         "border-1",
         "rounded-1",
-        "bg-white-subtle"
+
     ]
     wrapper.classList.add(...wrapperClasses)
 
     const label = document.createElement('span')
-    label.classList.add("h5", "d-flex", "align-items-center")
+    label.classList.add("h5")
     label.innerText = labelText
 
     const badges = []
