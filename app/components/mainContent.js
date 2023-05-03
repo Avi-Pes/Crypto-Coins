@@ -20,7 +20,6 @@ async function renderCoinsFromApi() {
 }
 
 function renderEmptyContent(text = "No Coins To Show...") {
-    console.log("in")
     const destination = DOM.contentBox
     destination.innerHTML = ""
     const h4 = document.createElement('h4')
@@ -46,7 +45,9 @@ function getCardsBox(arrOfCoins) {
     const cols = arrOfCoins.map(coin => {
         const col = document.createElement('div')
         col.classList.add("col")
+        // !! keep JQUERY??
         const card = getCoinCard(coin)
+        // const card = getCoinCardJQUERY(coin)
         col.append(card)
         return col
     })
@@ -103,6 +104,43 @@ function getCoinCard(coin) {
     return card
 }
 
+//!! DUPLICATE
+function getCoinCardJQUERY(coin) {
+    if (!coin || typeof coin !== 'object') throw new Error("coin object expected");
+
+    const btnText = "More Info";
+
+    const card = $('<article>').addClass("coin-card card h-100").data("coinId", coin.id);
+
+    const cardBody = $('<div>').addClass("card-body");
+    const cardTitle = $('<h5>').addClass("card-title").text(coin?.name || coin.id).css({
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+        overflow: "hidden"
+    });
+    const cardText = $('<p>').addClass("card-text").text(`Symbol: ${coin.symbol}`);
+    const btnBox = $('<div>').addClass("d-flex gap-3");
+    const infoBtn = $('<button>').addClass("btn btn-primary").text(btnText).appendTo(btnBox);
+
+    const infoBox = $('<div>').addClass("p-2 mt-2 border border-1 border-dark d-none")
+        .attr("id", "infoBox")
+        .data("isOpened", "false");
+
+    infoBtn.on('click', (e) => {
+        moreInfoHandler(card, btnBox, infoBox);
+        e.stopPropagation();
+    });
+
+    card.on('click', cardClickHandler);
+
+    if (FILTER_STATE.watched.has(card.data("coinId"))) card.addClass("watched-coin");
+
+    cardBody.append(cardTitle, cardText, btnBox, infoBox);
+    card.append(cardBody);
+
+    return card[0];
+}
+
 function cardClickHandler() {
     const id = this.dataset.coinId
 
@@ -127,12 +165,20 @@ function renderCardsFromArr(arr) {
         return
     }
 
-    FILTER_STATE.recentArrDrawn = arr
+    //!! FOR PRODUCTION 
+    if (arr === FILTER_STATE.allCoins && arr.length > 1000) arr = arr.slice(900, 1000)
+    //!! FOR PRODUCTION 
 
     const destination = DOM.contentBox
-    const cardsBox = getCardsBox(arr)
     destination.innerHTML = ""
+    updateStateArr(arr)
+    const cardsBox = getCardsBox(arr)
     destination.append(cardsBox)
+
+
+    function updateStateArr(array) {
+        FILTER_STATE.recentArrDrawn = array
+    }
 }
 
 function renderWatchedList() {
@@ -151,6 +197,7 @@ function renderWatchedList() {
     const wrapper = document.createElement('div')
     const wrapperClasses = [
         "d-flex",
+        "flex-wrap",
         "gap-2",
         "justify-content-center",
         "align-items-center",
@@ -324,7 +371,6 @@ async function moreInfoHandler(card, loaderDest, infoDest) {
 }
 
 function renderInfoBox(dataObj, infoBox) {
-    console.log('=====>', 'dataObj:', dataObj);
 
     const imageUrl = dataObj?.image?.large
     const USD = dataObj.market_data?.current_price?.usd
