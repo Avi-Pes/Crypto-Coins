@@ -44,9 +44,7 @@ function renderPageDashboard() {
     FILTER_STATE.allCoins ? renderCardsFromArr(FILTER_STATE.allCoins) : renderCoinsFromApi()
 }
 function renderPageCharts() {
-    DOM.controllersBox.innerHTML = ""
-    DOM.contentBox.innerHTML = "<h2>Charts</h2>"
-
+    renderChart()
 }
 function renderPageAbout() {
     DOM.controllersBox.innerHTML = ""

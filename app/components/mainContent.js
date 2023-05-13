@@ -45,9 +45,7 @@ function getCardsBox(arrOfCoins) {
     const cols = arrOfCoins.map(coin => {
         const col = document.createElement('div')
         col.classList.add("col")
-        // !! keep JQUERY??
         const card = getCoinCard(coin)
-        // const card = getCoinCardJQUERY(coin)
         col.append(card)
         return col
     })
@@ -64,12 +62,13 @@ function getCoinCard(coin) {
     const card = document.createElement('article')
     card.classList.add("coin-card", "card", "h-100")
     card.dataset.coinId = coin.id
+    card.dataset.coinSymbol = coin.symbol
 
     const cardBody = document.createElement('div')
     cardBody.classList.add("card-body")
     const cardTitle = document.createElement('h5')
     cardTitle.classList.add("card-title")
-    cardTitle.innerText = coin.name || coin.id
+    cardTitle.innerText = coin?.name || coin.id
     cardTitle.style.whiteSpace = "nowrap"
     cardTitle.style.textOverflow = "ellipsis"
     cardTitle.style.overflow = "hidden"
@@ -94,7 +93,7 @@ function getCoinCard(coin) {
         e.stopPropagation()
     })
     card.addEventListener('click', cardClickHandler)
-    if (FILTER_STATE.watched.has(card.dataset.coinId)) card.classList.add("watched-coin")
+    if (FILTER_STATE.watched.has(card.dataset.coinSymbol)) card.classList.add("watched-coin")
 
 
 
@@ -104,56 +103,19 @@ function getCoinCard(coin) {
     return card
 }
 
-//!! DUPLICATE
-function getCoinCardJQUERY(coin) {
-    if (!coin || typeof coin !== 'object') throw new Error("coin object expected");
-
-    const btnText = "More Info";
-
-    const card = $('<article>').addClass("coin-card card h-100").data("coinId", coin.id);
-
-    const cardBody = $('<div>').addClass("card-body");
-    const cardTitle = $('<h5>').addClass("card-title").text(coin?.name || coin.id).css({
-        whiteSpace: "nowrap",
-        textOverflow: "ellipsis",
-        overflow: "hidden"
-    });
-    const cardText = $('<p>').addClass("card-text").text(`Symbol: ${coin.symbol}`);
-    const btnBox = $('<div>').addClass("d-flex gap-3");
-    const infoBtn = $('<button>').addClass("btn btn-primary").text(btnText).appendTo(btnBox);
-
-    const infoBox = $('<div>').addClass("p-2 mt-2 border border-1 border-dark d-none")
-        .attr("id", "infoBox")
-        .data("isOpened", "false");
-
-    infoBtn.on('click', (e) => {
-        moreInfoHandler(card, btnBox, infoBox);
-        e.stopPropagation();
-    });
-
-    card.on('click', cardClickHandler);
-
-    if (FILTER_STATE.watched.has(card.data("coinId"))) card.addClass("watched-coin");
-
-    cardBody.append(cardTitle, cardText, btnBox, infoBox);
-    card.append(cardBody);
-
-    return card[0];
-}
-
 function cardClickHandler() {
-    const id = this.dataset.coinId
+    const sym = this.dataset.coinSymbol
 
-    if (!FILTER_STATE.watched.has(id)) {
+    if (!FILTER_STATE.watched.has(sym)) {
         if (FILTER_STATE.watched.size < 5) {
-            FILTER_STATE.watched.add(id)
+            FILTER_STATE.watched.add(sym)
             this.classList.add("watched-coin")
         } else {
             // alert("only 5 coins can be watched")
-            popModal("only 5 coins can be watched", id)
+            popModal("only 5 coins can be watched", sym)
         }
     } else {
-        FILTER_STATE.watched.delete(id)
+        FILTER_STATE.watched.delete(sym)
         this.classList.remove("watched-coin")
     }
     renderControllers()
@@ -215,14 +177,14 @@ function renderWatchedList() {
     label.innerText = labelText
 
     const badges = []
-    watched.forEach((id) => {
+    watched.forEach((sym) => {
         const badge = document.createElement('span')
         badge.classList.add("badge", "bg-secondary", "p-2", "rounded-3")
-        badge.innerText = id
+        badge.innerText = sym
         badge.style.cursor = "no-drop"
         badge.addEventListener('click', () => {
-            watched.delete(id)
-            document.querySelector(`.coin-card[data-coin-id=${id}]`).classList.remove("watched-coin")
+            watched.delete(sym)
+            document.querySelector(`.coin-card[data-coin-symbol=${sym}]`)?.classList.remove("watched-coin")
             // renderWatchedList()
             renderControllers()
         })
@@ -236,8 +198,8 @@ function renderWatchedList() {
         if (watched.size === 0) return
         const arr = []
         const watchedArr = [...watched]
-        watchedArr.forEach(wId => {
-            const coin = FILTER_STATE.allCoins.find(c => c.id === wId)
+        watchedArr.forEach(sym => {
+            const coin = FILTER_STATE.allCoins.find(c => c.symbol === sym)
             arr.push(coin)
         })
         renderCardsFromArr(arr)
@@ -430,31 +392,13 @@ function renderInfoBox(dataObj, infoBox) {
 
 }
 
-function popModal(titleText, coinID) {
-    const modal = getModalElement(titleText, coinID)
+function popModal(titleText, coinSym) {
+    const modal = getModalElement(titleText, coinSym)
     document.body.append(modal)
 
 }
 
-function getModalElement(titleText = "title", coinID) {
-
-    // <!-- modal experiment -->
-
-    // <section class="container p-3">
-    //     <div class="modal-overlay"></div>
-
-    //     <div class="my-modal card p-3">
-    //         <h5 class="ps-2">title</h5>
-    //         <div id="card-body" class="p-2">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur, facilis!</div>
-    //         <div id="modalButtonBox" class="d-flex justify-content-end gap-2">
-    //             <button class="btn btn-lg btn-success">save</button>
-    //             <button class="btn btn-lg btn-secondary">close</button>
-    //         </div>
-    //     </div>
-    // </section>
-
-    // <!-- modal experiment -->
-
+function getModalElement(titleText = "title", coinSym) {
 
     // overlay
     const overlay = document.createElement('section')
@@ -503,13 +447,13 @@ function getModalElement(titleText = "title", coinID) {
         const togglersNodeList = cardBody.querySelectorAll('.modal-toggler')
         const checked = []
         togglersNodeList.forEach(t => {
-            if (t.checked) checked.push(t.dataset.coinId)
+            if (t.checked) checked.push(t.dataset.coinSymbol)
         })
         if (checked.length > 5) return
 
         FILTER_STATE.watched.clear()
-        checked.forEach(id => {
-            FILTER_STATE.watched.add(id)
+        checked.forEach(sym => {
+            FILTER_STATE.watched.add(sym)
         })
 
         renderControllers()
@@ -521,7 +465,7 @@ function getModalElement(titleText = "title", coinID) {
 
     function watchedCheckboxes() {
         const watchedSet = FILTER_STATE.watched
-        const arr = [...watchedSet, coinID]
+        const arr = [...watchedSet, coinSym]
 
         const togglersBox = document.createElement('div')
 
@@ -536,15 +480,9 @@ function getModalElement(titleText = "title", coinID) {
         return togglersBox
     }
 
-    function getBStoggler(coinID, isChecked = false) {
-        const togglerId = `toggle_${coinID}`
-        const labelText = coinID
-        // 
-        // <div class="form-check form-switch">
-        //     <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-        //         <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
-        // </div>
-        // 
+    function getBStoggler(coinSym, isChecked = false) {
+        const togglerId = `toggle_${coinSym}`
+        const labelText = coinSym
 
         const div = document.createElement('div')
         div.classList.add("form-check", "form-switch")
@@ -555,7 +493,7 @@ function getModalElement(titleText = "title", coinID) {
         toggle.role = "switch"
         toggle.checked = isChecked ? true : false
         toggle.id = togglerId
-        toggle.dataset.coinId = coinID
+        toggle.dataset.coinSymbol = coinSym
 
         const label = document.createElement('label')
         label.classList.add("form-check-label")
