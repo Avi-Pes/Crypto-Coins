@@ -13,7 +13,6 @@ async function getPrices(arrOfSymbols, isRelaxed = true) {
     try {
         const res = await fetch(apiURL)
         const json = await res.json()
-        console.log('=====>', 'json:', json);
         if (json.Response) throw new Error(json.Message)
         return json
     } catch (error) {

@@ -18,6 +18,7 @@ const FILTER_STATE = {
         amount: null
     },
     additionalInfos: [],
+    currentPage: null,
 }
 
 init()
@@ -39,14 +40,17 @@ function init() {
 
 
 function renderPageDashboard() {
+    FILTER_STATE.currentPage = 1
 
     renderControllers()
     FILTER_STATE.allCoins ? renderCardsFromArr(FILTER_STATE.allCoins) : renderCoinsFromApi()
 }
 function renderPageCharts() {
+    FILTER_STATE.currentPage = 2
     renderChart()
 }
 function renderPageAbout() {
+    FILTER_STATE.currentPage = 3
     DOM.controllersBox.innerHTML = ""
     DOM.contentBox.innerHTML = "<h2>About</h2>"
 }

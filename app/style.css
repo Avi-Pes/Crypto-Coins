@@ -56,6 +56,18 @@ body {
     animation: ModalEntrance 300ms cubic-bezier(0.37, 0, 0.63, 1) 200ms 1 normal forwards;
 }
 
+.chart-box {
+    padding: 2rem;
+    background: #EEEEEE;
+    display: flex;
+    /* required Chart.js responsive: */
+    position: relative;
+    justify-content: center;
+    border-radius: 30px;
+    box-shadow: 0px 0px 0px 5px rgba(160, 160, 160, 0.5), inset 0px 10px 27px -8px rgba(20, 20, 20, 0.5), inset 0px -10px 27px -8px hsla(238, 73%, 37%, 0.6), 5px 5px 15px 5px rgba(0, 0, 0, 0);
+
+}
+
 
 
 /* Animations */
