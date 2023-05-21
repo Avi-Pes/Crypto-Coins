@@ -51,6 +51,6 @@ function renderPageCharts() {
 }
 function renderPageAbout() {
     FILTER_STATE.currentPage = 3
-    DOM.controllersBox.innerHTML = ""
-    DOM.contentBox.innerHTML = "<h2>About</h2>"
+    renderAbout()
+
 }

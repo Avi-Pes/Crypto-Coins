@@ -3,6 +3,7 @@
 // { BTC: { USD: 26921.11, EUR: 24849.7, ILS: 98933.09 } DOGE: { USD: 0.07185, EUR: 0.06627, ILS: 0.2642 } ETH: { USD: 1803.97, EUR: 1665.58, ILS: 6583.44 } }
 
 function renderChart() {
+
     // !! delete!!
     // FILTER_STATE.watched.add("btc")
     // FILTER_STATE.watched.add("eth")
@@ -11,6 +12,11 @@ function renderChart() {
 
     DOM.controllersBox.innerHTML = ""
     DOM.contentBox.innerHTML = ""
+
+    if (FILTER_STATE.watched.size === 0) {
+        renderEmptyChartsPage()
+        return
+    }
 
     const h3 = document.createElement('h3')
     h3.classList.add('text-center')
@@ -128,4 +134,16 @@ function drawLineChart(X_LABELS, dataObjs) {
     });
 
     return chart
+}
+
+function renderEmptyChartsPage() {
+    const msg = "To watch live changes in coin prices: \n first head to 'Home' and select some coins"
+
+    DOM.controllersBox.innerHTML = ""
+    DOM.contentBox.innerHTML = ""
+
+    const h5 = document.createElement('h5')
+    h5.classList.add('text-center')
+    h5.innerText = msg
+    DOM.controllersBox.append(h5)
 }
