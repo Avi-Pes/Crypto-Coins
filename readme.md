@@ -3,7 +3,9 @@
 
 
 ## working with:
+- single page application with vanilla JS
+- runtime state management
 - API, Http Requests
-- bootstrap
+- storing data locally to minimize fetch requests
+- bootstrap 5
 - charts.js
-- and more...
