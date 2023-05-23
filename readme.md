@@ -9,3 +9,4 @@
 - storing data locally to minimize fetch requests
 - bootstrap 5
 - charts.js
+- sweet alert

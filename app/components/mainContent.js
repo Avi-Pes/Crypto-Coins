@@ -13,7 +13,7 @@ async function renderCoinsFromApi() {
     } catch (error) {
         const msg = `OOPS there is an Error!
         ${error}`
-        alert(msg)
+        alertError(msg)
         renderEmptyContent()
         toggleLoader(destination, true)
     }
@@ -58,7 +58,6 @@ function getCoinCard(coin) {
     if (!coin || typeof coin !== 'object') throw new Error("coin object expected")
 
     const btnText = "More Info"
-    // {id: '01coin', symbol: 'zoc', name: '01coin'}
     const card = document.createElement('article')
     card.classList.add("coin-card", "card", "h-100")
     card.dataset.coinId = coin.id
@@ -111,7 +110,6 @@ function cardClickHandler() {
             FILTER_STATE.watched.add(sym)
             this.classList.add("watched-coin")
         } else {
-            // alert("only 5 coins can be watched")
             popModal("only 5 coins can be watched", sym)
         }
     } else {
@@ -123,13 +121,12 @@ function cardClickHandler() {
 function renderCardsFromArr(arr) {
     if (!Array.isArray(arr) || arr.length === 0 || !arr) {
         renderEmptyContent()
-        console.error("array of coins expected")
         return
     }
 
-    //!! FOR PRODUCTION 
-    if (arr === FILTER_STATE.allCoins && arr.length > 1000) arr = arr.slice(900, 1000)
-    //!! FOR PRODUCTION 
+    // //!! FOR PRODUCTION 
+    // if (arr === FILTER_STATE.allCoins && arr.length > 1000) arr = arr.slice(900, 1000)
+    // //!! FOR PRODUCTION 
 
     const destination = DOM.contentBox
     destination.innerHTML = ""
@@ -162,7 +159,6 @@ function renderWatchedList() {
         "d-flex",
         "flex-wrap",
         "gap-2",
-        // "justify-content-center",
         "align-items-center",
         "p-2",
         "border",
@@ -185,7 +181,6 @@ function renderWatchedList() {
         badge.addEventListener('click', () => {
             watched.delete(sym)
             document.querySelector(`.coin-card[data-coin-symbol=${sym}]`)?.classList.remove("watched-coin")
-            // renderWatchedList()
             renderControllers()
         })
         badges.push(badge)
@@ -297,7 +292,6 @@ async function moreInfoHandler(card, loaderDest, infoDest) {
     const infoBox = infoDest
 
 
-    // if presented => close dataBox
     if (infoBox.dataset.isOpened === "true") {
         closeInfoBox()
     } else {
@@ -347,7 +341,6 @@ function renderInfoBox(dataObj, infoBox) {
     const right = document.createElement('div')
 
     const img = document.createElement('img')
-    // img.classList.add("img-fluid")
     img.style.maxHeight = "150px"
     img.src = imageUrl
     img.alt = "Image Missing"
@@ -415,7 +408,6 @@ function getModalElement(titleText = "title", coinSym) {
     const cardBody = document.createElement('div')
     cardBody.id = "modal-body"
     cardBody.classList.add("p-2")
-    // TODO add the watchList mechanism
     const watched = watchedCheckboxes()
     cardBody.append(watched)
 
@@ -436,7 +428,6 @@ function getModalElement(titleText = "title", coinSym) {
     overlay.append(modal)
     return overlay
 
-    // TODO write handlers for buttons
 
     function cancelHandler() {
         modal.classList.add("visually-hidden")

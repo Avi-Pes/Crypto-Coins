@@ -37,10 +37,43 @@ async function renderLiveUpdatedChart() {
     const timeLabels = []
 
     await updateData()
+    const missingCoins = testForMissingCoins()
+    if (missingCoins) printDisclaimer(missingCoins)
     const chart = drawLineChart(timeLabels, Object.values(allData))
 
     const liveChart = setInterval(intervalFn, intervalsTime)
 
+
+    function printDisclaimer(arr) {
+        if (!Array.isArray(arr) || arr.length === 0) return
+
+        const msg = " The following coins are missing in database:"
+
+        const div = document.createElement('div')
+        div.classList.add('text-center')
+        const span = document.createElement('span')
+        span.classList.add('text-danger')
+        span.innerText = "Attention! "
+        const span2 = document.createElement('span')
+        span2.innerText = msg
+        const names = document.createElement('p')
+        names.classList.add('text-uppercase', 'lead')
+        names.innerText = arr.join(", ")
+
+        div.append(span, span2, names)
+        DOM.controllersBox.append(div)
+    }
+
+    function testForMissingCoins() {
+        const keys = Object.keys(allData)
+        const missingCoins = []
+        keys.forEach(k => {
+            const emptyData = (allData[k].data?.length === 0)
+            if (emptyData) missingCoins.push(k)
+        })
+
+        if (missingCoins.length) return missingCoins
+    }
 
     function getObjectInChartFormat(arrOfCoinsNames) {
         const obj = {}

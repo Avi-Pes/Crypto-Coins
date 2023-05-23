@@ -22,21 +22,22 @@
         <header>
             <div class="p-4 text-bg-dark">
 
-                <nav class="row align-items-center">
+                <div class="row gap-3 align-items-center">
 
-                    <div class="col-5 text-center d-flex align-items-center">
+                    <div class="col-sm-12 col-md-5 ">
+                        <div class="text-center d-flex align-items-center"></div>
                         <img src="assets/img/cryptopeak_logo_crop.png" alt="CryptoPeak Logo" class="img-fluid rounded-3">
                     </div>
 
-                    <div class="col-7">
-                        <div class="d-flex gap-5">
+                    <div class="col-sm-12 col-md-6">
+                        <nav class="d-flex gap-5 justify-content-center">
                             <button id="homeBtn" class="btn btn-lg btn-primary">Home</button>
                             <button id="chartsBtn" class="btn btn-lg btn-primary">Charts</button>
                             <button id="aboutBtn" class="btn btn-lg btn-primary">About</button>
-                        </div>
+                        </nav>
                     </div>
 
-                </nav>
+                </div>
 
             </div>
         </header>
@@ -65,6 +66,7 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
     <script src="app/data/coingecko.AJAX.js"></script>
@@ -74,6 +76,7 @@
     <script src="app/components/charts.js"></script>
     <script src="app/components/About.js"></script>
     <script src="app/components/parallax.js"></script>
+    <script src="app/components/Alert.js"></script>
     <script src="app/index.js"></script>
 </body>
 

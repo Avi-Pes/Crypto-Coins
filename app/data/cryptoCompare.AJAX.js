@@ -16,19 +16,17 @@ async function getPrices(arrOfSymbols, isRelaxed = true) {
         if (json.Response) throw new Error(json.Message)
         return json
     } catch (error) {
-        console.error(error)
-        alert(error)
+        alertError(error)
     }
 }
 
 async function getPricesForWatched() {
 
     if (FILTER_STATE.watched.size === 0) return
+    const isIgnoreMissing = true
     const arr = Array.from(FILTER_STATE.watched)
-    const data = await getPrices(arr)
+    const data = await getPrices(arr, isIgnoreMissing)
     return data
 }
 
-    // TODO: renderEmpty
-    // if (arrOfSymbols.length === 0) return
 

@@ -8,18 +8,10 @@ async function getAllCoins() {
         const json = await res.json()
         FILTER_STATE.allCoins = json
 
-        // // ! for development only:
-        // const shorter = []
-        // json.forEach((coin, i) => { if (i >= 500 && i < 600) shorter.push(coin) })
-        // return shorter
-        // // !!!!!!!!!!
-
         return json
     } catch (error) {
-        // TODO add swal
-        console.error(error)
+        alertError(error)
     }
-
 }
 
 async function getCoin(id) {
@@ -31,12 +23,6 @@ async function getCoin(id) {
 
         return json
     } catch (error) {
-        // TODO add swal
-        console.error(error)
+        alertError(error)
     }
-}
-
-async function getWatchedCoinsFromApi() {
-    const watched = [...FILTER_STATE.watched]
-    console.log('=====>', 'watched:', watched);
 }
