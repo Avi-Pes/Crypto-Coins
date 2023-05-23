@@ -1,9 +1,21 @@
 body {
-    background: hsl(230, 30%, 75%);
+    min-height: 150vh;
+    /* fallback for parallax: */
+    background: #7e9ebe;
+    /* parallax: */
+    background-image: url(../assets/img/BG_Sprinkle_light.svg);
+    background-size: auto;
+    background-position-y: 10px;
+}
+
+nav button {
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
 }
 
 .coin-card {
-    transition: all 300ms;
+    transition: all 250ms;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(232, 233, 255, 1) 100%);
+    box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
 }
 
 .coin-card:hover {
@@ -13,7 +25,8 @@ body {
 
 .watched-coin {
     position: relative;
-    background: rgba(254, 254, 1, 0.755);
+    background: rgb(229, 253, 243);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
 }
 
 .watched-coin::before {
@@ -22,6 +35,80 @@ body {
     top: 0.5rem;
     right: 0.5rem;
     padding: 0.5rem;
-    background-color: grey;
+    background-color: rgb(209, 222, 242);
     border-radius: 30px;
+    border: 1px solid rgb(89, 89, 236);
+    color: rgb(89, 89, 236);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+    opacity: 0;
+    animation: FadeIn 500ms ease-in 0s 1 normal forwards;
+}
+
+.my-modal {
+    transition: all 400ms;
+    position: absolute;
+    width: 60%;
+    top: 20%;
+    left: 20%;
+    right: 20%;
+    z-index: 2;
+    opacity: 0;
+    animation: ModalEntrance 300ms cubic-bezier(0.37, 0, 0.63, 1) 200ms 1 normal forwards;
+}
+
+.chart-box {
+    padding: 2rem;
+    background: #EEEEEE;
+    display: flex;
+    /* required Chart.js responsive: */
+    position: relative;
+    justify-content: center;
+    border-radius: 30px;
+    box-shadow: 0px 0px 0px 5px rgba(160, 160, 160, 0.5), inset 0px 10px 27px -8px rgba(20, 20, 20, 0.5), inset 0px -10px 27px -8px hsla(238, 73%, 37%, 0.6), 5px 5px 15px 5px rgba(0, 0, 0, 0);
+
+}
+
+
+
+/* Animations */
+@keyframes FadeIn {
+    /* animation: FadeIn 500ms ease-in 0s 1 normal forwards; */
+
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes ModalEntrance {
+
+    /* animation: ModalEntrance 300ms cubic-bezier(0.37, 0, 0.63, 1) 200ms 1 normal forwards; */
+    0% {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
 }

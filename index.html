@@ -10,61 +10,73 @@
     <link rel="stylesheet" href="app/style.css">
 
 
+
     <title>Crypto</title>
 </head>
 
 <body>
+    <div class="bg-parallax"></div>
 
-    <header>
-        <div class="ps-2">
-            <h1>Crypto Coins Dashboard</h1>
-            <h4>single app application by - Avi Pesach</h4>
-        </div>
+    <div class="app">
 
-        <nav>
-            <div class="p-3 text-bg-dark">
-                <div class="row">
+        <header>
+            <div class="p-4 text-bg-dark">
 
+                <div class="row gap-3 align-items-center">
 
-                    <div class="col-3 text-center d-flex align-items-center">
-                        *** LOGO HERE ***
+                    <div class="col-sm-12 col-md-5 ">
+                        <div class="text-center d-flex align-items-center"></div>
+                        <img src="assets/img/cryptopeak_logo_crop.png" alt="CryptoPeak Logo" class="img-fluid rounded-3">
                     </div>
 
-                    <div class="col-9">
-                        <div class="d-flex gap-5">
-                            <button class="btn btn-primary">page1</button>
-                            <button class="btn btn-primary">page2</button>
-                            <button class="btn btn-primary">page3</button>
-                        </div>
+                    <div class="col-sm-12 col-md-6">
+                        <nav class="d-flex gap-5 justify-content-center">
+                            <button id="homeBtn" class="btn btn-lg btn-primary">Home</button>
+                            <button id="chartsBtn" class="btn btn-lg btn-primary ">Charts</button>
+                            <button id="aboutBtn" class="btn btn-lg btn-primary">About</button>
+                        </nav>
                     </div>
-                </div>
 
-
-            </div>
-        </nav>
-    </header>
-
-    <section class="py-4">
-
-        <div id="controllers" class="container p-2 bg-info-subtle shadow-sm rounded-1">
-        </div>
-
-        <main>
-            <div id="contentWrapper" class="container p-3">
-
-                <div id="content" class="">
                 </div>
 
             </div>
-        </main>
+        </header>
 
-    </section>
+        <section class="py-4">
+
+            <div id="controllers" class="container p-2 bg-info-subtle shadow-sm rounded-1">
+            </div>
+
+            <main>
+                <div id="contentWrapper" class="container p-3">
+
+                    <div id="content" class="">
+                    </div>
+
+                </div>
+            </main>
+
+        </section>
+
+    </div>
 
 
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <script src="app/data/AJAX.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+    <script src="app/data/coingecko.AJAX.js"></script>
+    <script src="app/data/cryptoCompare.AJAX.js"></script>
     <script src="app/components/loader.ui.js"></script>
     <script src="app/components/mainContent.js"></script>
+    <script src="app/components/charts.js"></script>
+    <script src="app/components/About.js"></script>
+    <script src="app/components/parallax.js"></script>
+    <script src="app/components/Alert.js"></script>
     <script src="app/index.js"></script>
 </body>
 

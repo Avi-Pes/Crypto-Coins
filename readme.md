@@ -1,9 +1,12 @@
-#### project by Avi Pesach
+#### CryptoPeak - project by Avi Pesach
 # Crypto Coins Dashboard
 
 
 ## working with:
+- single page application with vanilla JS
+- runtime state management
 - API, Http Requests
-- bootstrap
+- storing data locally to minimize fetch requests
+- bootstrap 5
 - charts.js
-- and more...
+- sweet alert
