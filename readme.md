@@ -1,4 +1,4 @@
-#### project by Avi Pesach
+#### CryptoPeak - project by Avi Pesach
 # Crypto Coins Dashboard
 
 
