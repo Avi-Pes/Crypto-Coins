@@ -34,6 +34,8 @@ function init() {
     DOM.chartsBtn.addEventListener('click', renderPageCharts)
     DOM.aboutBtn.addEventListener('click', renderPageAbout)
 
+    applyParallax()
+
     renderPageDashboard()
 
 }

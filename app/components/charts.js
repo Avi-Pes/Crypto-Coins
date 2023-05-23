@@ -1,14 +1,8 @@
 "use strict"
-// ['btc', 'eth', 'doge']
-// { BTC: { USD: 26921.11, EUR: 24849.7, ILS: 98933.09 } DOGE: { USD: 0.07185, EUR: 0.06627, ILS: 0.2642 } ETH: { USD: 1803.97, EUR: 1665.58, ILS: 6583.44 } }
 
 function renderChart() {
+    const controllerMsg = "Live Prices In USD"
 
-    // !! delete!!
-    // FILTER_STATE.watched.add("btc")
-    // FILTER_STATE.watched.add("eth")
-    // FILTER_STATE.watched.add("doge")
-    // !! delete!!
 
     DOM.controllersBox.innerHTML = ""
     DOM.contentBox.innerHTML = ""
@@ -20,7 +14,7 @@ function renderChart() {
 
     const h3 = document.createElement('h3')
     h3.classList.add('text-center')
-    h3.innerText = "Live Prices In USD"
+    h3.innerText = controllerMsg
     DOM.controllersBox.append(h3)
 
 
@@ -65,7 +59,7 @@ async function renderLiveUpdatedChart() {
     async function updateData() {
         const newData = await getPricesForWatched()
         coins.forEach(coin => {
-            //! some coins are not found in the API:
+            // some coins doesn't exist in the API:
             if (!newData[coin.toUpperCase()]) return
 
             allData[coin].data.push(newData[coin.toUpperCase()].USD)
@@ -84,10 +78,8 @@ async function renderLiveUpdatedChart() {
     async function intervalFn() {
         await updateData()
         updateChart(chart, timeLabels, Object.values(allData))
-        // console.log("updated");
         if (FILTER_STATE.currentPage !== 2) {
             clearInterval(liveChart)
-            // console.log("STOPPED");
         }
     }
 }
